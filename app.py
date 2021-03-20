@@ -781,7 +781,10 @@ def store():
 @app.route('/lastPage')
 def printpage():
     
-    return render_template('last_page.html')
+    mapbox_key = os.environ.get('API_KEY')
+
+
+    return render_template('last_page.html', mapbox_key=mapbox_key)
 
 @app.route('/api/ingredients')
 def ingredients():
