@@ -751,8 +751,7 @@ def recommendations(recipe_ids_list = [1554861,1560677,1571559]):
     ######################## KEEP FOR POSSIBLE USE WITH FUNCTION
     return recommendations_df
 
-
-
+global grocery_df2
 
 
 
@@ -821,7 +820,7 @@ def getIngredientList():
     #     response_json = response.json()
     #     capture_list.append(response_json)
 
-    global grocery_df2
+
 
 
     grocery_df2 = test_MAJOR(capture_list)
