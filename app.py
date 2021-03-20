@@ -27,7 +27,8 @@ else:
 
 ## global vars
 global grocery_df2
-
+global new_df
+global grocery_df
 
 ###################################################
 ###################################################
@@ -455,8 +456,7 @@ cloud_conn.close()
 
 def test_MAJOR(recipe_ids_list = [1554861,1560677,1571559]):
 
-    global new_df
-    global grocery_df
+
 
     # new_df = pd.DataFrame
 
