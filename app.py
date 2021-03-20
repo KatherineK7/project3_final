@@ -25,11 +25,6 @@ else:
     from config import x_rapidapi_key, x_rapidapi_host, spoonacular_API
 
 
-## global vars
-global grocery_df2
-global new_df
-global grocery_df
-
 ###################################################
 ###################################################
 ###################################################
@@ -162,7 +157,7 @@ def getIngredients(capture_list):
 ##################################################
 ##################################################
 
-def getRecipeMetadata(query, cuisine, type_of_recipe, calories, cookingMinutes): 
+def getRecipeMetadata(query, cuisine, diet, type_of_recipe, intolerances): 
     
     #######################################
     # consider separating this part into a function
@@ -171,9 +166,9 @@ def getRecipeMetadata(query, cuisine, type_of_recipe, calories, cookingMinutes):
     # these will come from form controls
     query = query
     cuisine = cuisine
+    diet = diet
     type_of_recipe = type_of_recipe
-    calories = calories
-    cookingMinutes = cookingMinutes
+    intolerances = intolerances
     # ranking = "2"
     minCalories = "0"
     maxCalories = "15000"
@@ -189,12 +184,14 @@ def getRecipeMetadata(query, cuisine, type_of_recipe, calories, cookingMinutes):
         "number": "10",
         "query": query,
         "cuisine": cuisine,
-        "cookingMinutes": cookingMinutes,                   # NEW
-        "calories": calories,                               # NEW
+        "diet": diet,
+        "type": type_of_recipe,
+        "intolerances": intolerances,                   # NEW
+                                      # NEW
         #"includeIngredients": "onions, lettuce, tomato",
         #"excludeIngredients": "coconut, mango",
         #"intolerances": "peanut, shellfish",
-        "type": type_of_recipe,
+   
         # "ranking": ranking,
         "minCalories": minCalories,
         "maxCalories": maxCalories,
@@ -233,19 +230,18 @@ def getRecipeMetadata(query, cuisine, type_of_recipe, calories, cookingMinutes):
             recipe_id = result['id']
             recipe_title = result['title']        
             cooking_minutes = result['cookingMinutes']
-            health_score = result['healthScore']
             source_url = result['sourceUrl']
             image = result['image']
-            likes = result['aggregateLikes']                # Brooke modification / previously, it had been 'likes'
+            # Brooke modification / previously, it had been 'likes'
             # cuisine = result['cuisines'][0]                 # Brooke addition (my slicing may not work; my method used a df)
             calories_serving = result['calories']           # Brooke addition
-            carbohydrates_serving = result['carbs']         # Brooke addition
+            # Brooke addition
             servings = result['servings']                   # Brooke addition
 
             analyzedInstructions = result['analyzedInstructions']
             
         except Exception as e:
-            print('--- error with something ---')
+            print(e)
             print(result.keys())
             continue
 
@@ -271,12 +267,9 @@ def getRecipeMetadata(query, cuisine, type_of_recipe, calories, cookingMinutes):
             'recipe_id': recipe_id,
             'recipe_title': recipe_title,
             'cooking_minutes': cooking_minutes,
-            'health_score': health_score,
             'source_url': source_url,
             'image': image,
-            'likes': likes,
             'calories_serving': calories_serving,
-            'carbohydrates_serving': carbohydrates_serving,
             'servings': servings,
             'recipe_steps': recipe_steps
         }
@@ -456,7 +449,8 @@ cloud_conn.close()
 
 def test_MAJOR(recipe_ids_list = [1554861,1560677,1571559]):
 
-
+    global new_df
+    global grocery_df
 
     # new_df = pd.DataFrame
 
@@ -760,6 +754,8 @@ def recommendations(recipe_ids_list = [1554861,1560677,1571559]):
 
 
 
+
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -823,7 +819,7 @@ def getIngredientList():
     #     response_json = response.json()
     #     capture_list.append(response_json)
 
-
+    global grocery_df2
 
 
     grocery_df2 = test_MAJOR(capture_list)
@@ -912,13 +908,13 @@ def recipemetadata():
     
     query = request.args.get('query')
     cuisine = request.args.get('cuisine')
-    cookingMinutes = request.args.get('cookingMinutes')
-    calories = request.args.get('calories')
+    diet = request.args.get('diet')
     type_of_recipe = request.args.get('type_of_recipe')
+    intolerances = request.args.get('intolerances')
     
-    print(query, cuisine, cookingMinutes, type_of_recipe, calories)
+    print(query, cuisine, diet, type_of_recipe, intolerances)
 
-    recipe_df = getRecipeMetadata(query, cuisine, type_of_recipe, calories, cookingMinutes)    
+    recipe_df = getRecipeMetadata(query, cuisine, diet, type_of_recipe, intolerances)    
     
     recipe_json = recipe_df.to_json(orient='records')
     
