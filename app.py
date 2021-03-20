@@ -25,6 +25,10 @@ else:
     from config import x_rapidapi_key, x_rapidapi_host, spoonacular_API
 
 
+## global vars
+global grocery_df2
+
+
 ###################################################
 ###################################################
 ###################################################
@@ -751,7 +755,6 @@ def recommendations(recipe_ids_list = [1554861,1560677,1571559]):
     ######################## KEEP FOR POSSIBLE USE WITH FUNCTION
     return recommendations_df
 
-global grocery_df2
 
 
 
